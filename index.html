@@ -38,7 +38,7 @@
 				$("#get-button").click(function(){
 					$("#result").css('color', 'black');
 					
-					console.clear();
+					//console.clear();
 					totalDays = 0;
 					
 					birthDay = $("#day-input").val();
@@ -72,7 +72,7 @@
 					}
 					
 					var totalPasaranDays = getTotalPasaranDays();
-					console.log("Birthdays : " + totalBirthDays + " ; Pasarandays : " + totalPasaranDays);
+					//console.log("Birthdays : " + totalBirthDays + " ; Pasarandays : " + totalPasaranDays);
 					totalDays = totalBirthDays - totalPasaranDays;
 					
 					var totalDaysModByFive = totalDays % 5;
@@ -235,8 +235,8 @@
 			function getTotalDaysOnNight(){
 				birthDay = Number(birthDay) + 1;								
 				var totalDaysInBirthMonth = totalDaysInMonth((birthMonth + 1), birthYear);
-				console.log(birthDay);
-				console.log(totalDaysInBirthMonth);
+				//console.log(birthDay);
+				//console.log(totalDaysInBirthMonth);
 				
 				if (birthDay > totalDaysInBirthMonth){
 					birthDay = 1;
@@ -309,46 +309,54 @@
 				return result;
 			}
 		</script>
-		</head>
+	</head>
 	<body>
-		<div class="container">
-			<h4 class="text-center">Hari Pasaran Berdasarkan Tanggal Lahir</h2>
-			<form action="/action_page.php">
-			<div class="form-group">
-				<label for="day-input">Tanggal :</label>
-				<input type="number" class="form-control" id="day-input" name="day-input" min="1">
-			</div>
-			<div class="form-group">
-				<label for="bulan-select">Bulan :</label>
-				<select class="form-control" id="bulan-select" name="bulan-select">
-					<option value="0">Januari</option>
-					<option value="1">Februari</option>
-					<option value="2">Maret</option>
-					<option value="3">April</option>
-					<option value="4">Mei</option>
-					<option value="5">Juni</option>
-					<option value="6">Juli</option>
-					<option value="7">Agustus</option>
-					<option value="8">September</option>
-					<option value="9">Oktober</option>
-					<option value="10">November</option>
-					<option value="11">Desember</option>
-				</select>
-			</div>
-			<div class="form-group">
-				<label for="year-input">Tahun :</label>
-				<input type="number" class="form-control" id="year-input" name="year-input" min="1">
-			</div>
-			<div class="form-group form-check">
-				<label class="form-check-label">
-					<input class="form-check-input" type="checkbox" id="after-dusk-checkbox" name="after-dusk-checkbox"> Setelah Maghrib dan di bawah jam 12 malam
-				</label>
-			</div>
-			<button class="btn btn-primary" id="get-button" type="button">Lihat Hari Pasaran</button>
-			<div class="form-group pt-3">
-				<p id="result" class="font-weight-bold">This is a paragraph.</p>
-			</div>
-		  </form>
+		<div class="page-content">
+			<div class="content-wrapper">
+				<div id="content" class="content d-flex justify-content-center align-items-center">
+					<div class="card mt-5">
+						<div class="card-body m-0">
+							<h4 class="text-center">Hari Pasaran Berdasarkan Tanggal Lahir</h2>
+							<form action="/action_page.php">
+							<div class="form-group">
+								<label for="day-input">Tanggal :</label>
+								<input type="number" class="form-control" id="day-input" name="day-input" min="1">
+							</div>
+							<div class="form-group">
+								<label for="bulan-select">Bulan :</label>
+								<select class="form-control" id="bulan-select" name="bulan-select">
+									<option value="0">Januari</option>
+									<option value="1">Februari</option>
+									<option value="2">Maret</option>
+									<option value="3">April</option>
+									<option value="4">Mei</option>
+									<option value="5">Juni</option>
+									<option value="6">Juli</option>
+									<option value="7">Agustus</option>
+									<option value="8">September</option>
+									<option value="9">Oktober</option>
+									<option value="10">November</option>
+									<option value="11">Desember</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="year-input">Tahun :</label>
+								<input type="number" class="form-control" id="year-input" name="year-input" min="1">
+							</div>
+							<div class="form-group form-check">
+								<label class="form-check-label">
+									<input class="form-check-input" type="checkbox" id="after-dusk-checkbox" name="after-dusk-checkbox"> Setelah Maghrib dan di bawah jam 12 malam
+								</label>
+							</div>
+							<button class="btn btn-primary" id="get-button" type="button">Lihat Hari Pasaran</button>
+							<div class="form-group pt-3">
+								<p id="result" class="font-weight-bold">This is a paragraph.</p>
+							</div>
+						  </form>
+						</div>
+					</div>
+				</div>
+			</div
 		</div>
 	</body>
 </html>
