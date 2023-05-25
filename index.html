@@ -30,7 +30,7 @@
 			$(document).ready(function(){
 				$('#bulan-select').select2({ width: "100%" });
 				$("#day-input").val(birthDay);
-				$("#bulan-select").val(birthMonth.toString());
+				$("#bulan-select").val(birthMonth.toString()).trigger("change");
 				$("#year-input").val(birthYear);
 				$("#result").text(pasaranDay);
 				$("#after-dusk-checkbox").prop('checked', isAfterDusk);
