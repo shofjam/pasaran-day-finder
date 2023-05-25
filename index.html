@@ -28,7 +28,7 @@
 			var isAfterDusk = false;
 
 			$(document).ready(function(){
-				$('.js-example-basic-single').select2();
+				$('#bulan-select').select2({ width: "100%" });
 				$("#day-input").val(birthDay);
 				$("#bulan-select").val(birthMonth.toString());
 				$("#year-input").val(birthYear);
@@ -320,7 +320,7 @@
 			</div>
 			<div class="form-group">
 				<label for="bulan-select">Bulan :</label>
-				<select class="form-control js-example-basic-single" id="bulan-select" name="bulan-select">
+				<select class="form-control" id="bulan-select" name="bulan-select">
 					<option value="0">Januari</option>
 					<option value="1">Februari</option>
 					<option value="2">Maret</option>
