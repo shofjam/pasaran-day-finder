@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+		<meta content="utf-8" http-equiv="encoding">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+		<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+		<script>
+			var birthDay = (new Date()).getDate();
+			var birthMonth = (new Date()).getMonth();
+			var birthYear = (new Date()).getFullYear();
+			var nowDay = (new Date()).getDate();
+			var nowMonth = (new Date()).getMonth();
+			var nowYear = (new Date()).getFullYear();
+			var kabisatYear = 2020;
+			var kliwonDay = 29;
+			var kliwonMonth = 4;
+			var kliwonYear = 2020;				
+			var totalDays = 0;
+			var totalKabisatDays = 0;
+			var pasaranDay = "";
+			var nationalDay = "";
+			var isAfterDusk = false;
+
+			$(document).ready(function(){
+				$('.js-example-basic-single').select2();
+				$("#day-input").val(birthDay);
+				$("#bulan-select").val(birthMonth.toString());
+				$("#year-input").val(birthYear);
+				$("#result").text(pasaranDay);
+				$("#after-dusk-checkbox").prop('checked', isAfterDusk);
+				
+				$("#get-button").click(function(){
+					$("#result").css('color', 'black');
+					
+					console.clear();
+					totalDays = 0;
+					
+					birthDay = $("#day-input").val();
+					birthMonth = Number($("#bulan-select").val());
+					birthYear = $("#year-input").val();
+					
+					if (birthDay < 1 || birthMonth < 0 || birthYear < 1){
+						$("#result").text("ERROR");
+						$("#result").css('color', 'red');
+						return;
+					}
+					
+					if (birthDay > totalDaysInMonth(birthMonth + 1, birthYear)){
+						if (birthMonth == 1)
+							$("#result").text("ERROR : Tidak ada tanggal " + birthDay + " untuk bulan " + $("#bulan-select option:selected").text() + " tahun " + birthYear);
+						else
+							$("#result").text("ERROR : Tidak ada tanggal " + birthDay + " untuk bulan " + $("#bulan-select option:selected").text());
+						$("#result").css('color', 'red');
+						return;
+					}
+					
+					isAfterDusk = $("#after-dusk-checkbox").is(':checked');
+				
+					var totalBirthDays = 0;
+					
+					if (isAfterDusk){
+						totalBirthDays = getTotalDaysOnNight();
+					}
+					else{
+						totalBirthDays = getTotalDays();
+					}
+					
+					var totalPasaranDays = getTotalPasaranDays();
+					console.log("Birthdays : " + totalBirthDays + " ; Pasarandays : " + totalPasaranDays);
+					totalDays = totalBirthDays - totalPasaranDays;
+					
+					var totalDaysModByFive = totalDays % 5;
+					
+					if (totalDaysModByFive == 0)
+						pasaranDay = "Kliwon";
+					else if (totalDaysModByFive < 0){
+						if (totalDaysModByFive == -1)
+							pasaranDay = "Legi";
+						else if (totalDaysModByFive == -2)
+							pasaranDay = "Pahing";
+						else if (totalDaysModByFive == -3)
+							pasaranDay = "Pon";
+						else if (totalDaysModByFive == -4)
+							pasaranDay = "Wage";
+						else
+							pasaranDay = "Unkown";
+					}
+					else{
+						if (totalDaysModByFive == 1)
+							pasaranDay = "Wage";
+						else if (totalDaysModByFive == 2)
+							pasaranDay = "Pon";
+						else if (totalDaysModByFive == 3)
+							pasaranDay = "Pahing";
+						else if (totalDaysModByFive == 4)
+							pasaranDay = "Legi";
+						else
+							pasaranDay = "Unkown";						
+					}
+					
+					var totalDaysModBySeven = totalDays % 7;
+					
+					if (totalDaysModBySeven == 0)
+						nationalDay = "Jum'at";
+					else if (totalDaysModBySeven < 0){
+						if (totalDaysModBySeven == -1)
+							nationalDay = "Sabtu";
+						else if (totalDaysModBySeven == -2)
+							nationalDay = "Minggu";
+						else if (totalDaysModBySeven == -3)
+							nationalDay = "Senin";
+						else if (totalDaysModBySeven == -4)
+							nationalDay = "Selasa";
+						else if (totalDaysModBySeven == -5)
+							nationalDay = "Rabu";
+						else if (totalDaysModBySeven == -6)
+							nationalDay = "Kamis";
+						else
+							nationalDay = "Unkown";
+					}
+					else{
+						if (totalDaysModBySeven == 1)
+							nationalDay = "Kamis";
+						else if (totalDaysModBySeven == 2)
+							nationalDay = "Rabu";
+						else if (totalDaysModBySeven == 3)
+							nationalDay = "Selasa";
+						else if (totalDaysModBySeven == 4)
+							nationalDay = "Senin";
+						else if (totalDaysModBySeven == 5)
+							nationalDay = "Minggu";
+						else if (totalDaysModBySeven == 6)
+							nationalDay = "Sabtu";
+						else
+							nationalDay = "Unkown";						
+					}
+					
+					if (isAfterDusk){
+						$("#result").text("Malam : " + nationalDay + " " + pasaranDay);
+					}
+					else{
+						$("#result").text("Hari : " + nationalDay + " " + pasaranDay);
+					}
+				});
+
+			});
+
+			function getTotalDays(){
+				var result = 0;
+				
+				//Get Total Days
+				for (var i = birthYear; i <= nowYear; i++){
+					var kondisi = "";
+					var totalMonths = 0;
+					var monthToFind = 0;
+					
+					if (birthYear == nowYear){
+						kondisi = "kondisi 0";
+						monthToFind = birthMonth;
+						totalMonths = birthMonth - nowMonth;
+						
+						if (totalMonths < 0){
+							totalMonths = Math.sqrt(totalMonths * totalMonths);
+						}
+					}
+					else if (i == birthYear && i < nowYear){
+						kondisi = "kondisi 1";
+						monthToFind = birthMonth;
+						totalMonths = 11 - monthToFind;
+					}
+					else if (i!= birthYear && i < nowYear){
+						kondisi = "kondisi 2";
+						totalMonths = 11;
+					}
+					else if (i == nowYear){
+						kondisi = "kondisi 3";
+						totalMonths = nowMonth;
+					}
+					
+					for (var j = 0; j <= totalMonths; j++){
+						monthToFind++;
+						result += totalDaysInMonth(monthToFind, i);
+					}
+				}
+				
+				return result - birthDay - totalDaysInMonth(nowMonth + 1, nowYear) + nowDay;
+			}
+			
+			function getTotalPasaranDays(){
+				var result = 0;
+				
+				//Get Total Days
+				for (var i = kliwonYear; i <= nowYear; i++){
+					var kondisi = "";
+					var totalMonths = 0;
+					var monthToFind = 0;
+					
+					if (kliwonYear == nowYear){
+						kondisi = "kondisi 0";
+						monthToFind = kliwonMonth;
+						totalMonths = kliwonMonth - nowMonth;
+						
+						if (totalMonths < 0){
+							totalMonths = Math.sqrt(totalMonths * totalMonths);
+						}
+					}
+					else if (i == kliwonYear && i < nowYear){
+						kondisi = "kondisi 1";
+						monthToFind = kliwonMonth;
+						totalMonths = 11 - monthToFind;
+					}
+					else if (i!= kliwonYear && i < nowYear){
+						kondisi = "kondisi 2";
+						totalMonths = 11;
+					}
+					else if (i == nowYear){
+						kondisi = "kondisi 3";
+						totalMonths = nowMonth;
+					}
+					
+					for (var j = 0; j <= totalMonths; j++){
+						monthToFind++;
+						result += totalDaysInMonth(monthToFind, i);
+					}
+				}
+				return result - kliwonDay - totalDaysInMonth(nowMonth + 1, nowYear) + nowDay;
+			}
+			
+			function getTotalDaysOnNight(){
+				birthDay = Number(birthDay) + 1;								
+				var totalDaysInBirthMonth = totalDaysInMonth((birthMonth + 1), birthYear);
+				console.log(birthDay);
+				console.log(totalDaysInBirthMonth);
+				
+				if (birthDay > totalDaysInBirthMonth){
+					birthDay = 1;
+					birthMonth = birthMonth + 1;
+					
+					if (birthMonth > 12){
+						birthMonth = 1;
+						birthYear = birthYear + 1;
+					}
+				}
+				
+				return getTotalDays();
+			}
+			
+			function getTotalKabisatDays(month, year){
+				var result = 0;
+				var birthYearModBy4 = (birthYear - kabisatYear) % 4;
+				var nowYearModBy4 = (nowYear - kabisatYear) % 4;
+				
+				if (birthYearModBy4 == 0){
+					if (birthMonth <= 2 && birthDay < 29){
+						result += 1;
+					}
+				}
+				
+				if (nowYearModBy4 == 0){
+					if (nowMonth >= 2 && nowDay > 29){
+						result += 1;
+					}
+				}
+				
+				return result;
+			}
+			
+			function totalDaysInMonth(month, year) {
+				var result = 0;
+				var yearModByFour = (year - kabisatYear) % 4;
+				
+				if (yearModByFour == 0){
+					if (month == 2){
+						result += 1;
+					}
+				}
+				
+				if (month == 1)
+					result += 31;
+				else if (month == 2)
+					result += 28;
+				else if (month == 3)
+					result += 31;
+				else if (month == 4)
+					result += 30;
+				else if (month == 5)
+					result += 31;
+				else if (month == 6)
+					result += 30;
+				else if (month == 7)
+					result += 31;
+				else if (month == 8)
+					result += 31;
+				else if (month == 9)
+					result += 30;
+				else if (month == 10)
+					result += 31;
+				else if (month == 11)
+					result += 30;
+				else if (month == 12)
+					result += 31;
+				
+				return result;
+			}
+		</script>
+		</head>
+	<body>
+		<div class="container">
+			<h4 class="text-center">Hari Pasaran Berdasarkan Tanggal Lahir</h2>
+			<form action="/action_page.php">
+			<div class="form-group">
+				<label for="day-input">Tanggal :</label>
+				<input type="number" class="form-control" id="day-input" name="day-input" min="1">
+			</div>
+			<div class="form-group">
+				<label for="bulan-select">Bulan :</label>
+				<select class="form-control js-example-basic-single" id="bulan-select" name="bulan-select">
+					<option value="0">Januari</option>
+					<option value="1">Februari</option>
+					<option value="2">Maret</option>
+					<option value="3">April</option>
+					<option value="4">Mei</option>
+					<option value="5">Juni</option>
+					<option value="6">Juli</option>
+					<option value="7">Agustus</option>
+					<option value="8">September</option>
+					<option value="9">Oktober</option>
+					<option value="10">November</option>
+					<option value="11">Desember</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="year-input">Tahun :</label>
+				<input type="number" class="form-control" id="year-input" name="year-input" min="1">
+			</div>
+			<div class="form-group form-check">
+				<label class="form-check-label">
+					<input class="form-check-input" type="checkbox" id="after-dusk-checkbox" name="after-dusk-checkbox"> Setelah Maghrib dan di bawah jam 12 malam
+				</label>
+			</div>
+			<button class="btn btn-primary" id="get-button" type="button">Lihat Hari Pasaran</button>
+			<div class="form-group pt-3">
+				<p id="result" class="font-weight-bold">This is a paragraph.</p>
+			</div>
+		  </form>
+		</div>
+	</body>
+</html>
